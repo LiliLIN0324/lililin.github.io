@@ -5,6 +5,7 @@ import { parseCSVFiles } from './src/demos/3d-cluster-visualizer-main/utils/csvH
 import ClusterVisualizer from './src/demos/3d-cluster-visualizer-main/components/ClusterVisualizer';
 import { Cluster } from './src/demos/3d-cluster-visualizer-main/types';
 import { Loader2, AlertCircle, Maximize2 } from 'lucide-react';
+import './src/index.css'
 
 export type AppProps = {
   initialK?: number;

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import ClusterVisualizer3D from "./App.tsx";
-import './index.css'
+import './src/index.css'
 
 const App = () => {
   const [activeTab, setActiveTab] = useState("research");
