@@ -1,0 +1,21 @@
+/* 我自己复制粘贴的 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+/* Force Plotly Modebar to Bottom Left */
+.cluster-plot-container .js-plotly-plot .plotly .modebar {
+  top: auto !important;
+  right: auto !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
