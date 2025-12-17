@@ -1,6 +1,6 @@
 1. Install dependencies:
    `npm install`
-2. Run the app:
+2. Build model:
+* npm run build
+3. Run the app:
    `npm run dev`
-   
-3.* npm run build
