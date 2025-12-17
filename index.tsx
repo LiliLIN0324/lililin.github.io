@@ -85,10 +85,10 @@ const App = () => {
             </h1>
           </div>
           
-          <div className="flex gap-4">
+          <div className="flex items-center gap-4">
             <SocialLink href="https://github.com/lililin0324" label="GH" />
-            <SocialLink href="#" label="EM" />
-            <SocialLink href="#" label="LN" />
+            <SocialLink href="lili0324@snu.ac.kr" label="EM" />
+            <SocialLink href="https://www.linkedin.com/in/lililin0324" label="LK" />
           </div>
         </header>
 
@@ -100,7 +100,7 @@ const App = () => {
             className={`
               border-r border-neutral-200 bg-neutral-50/50 flex flex-col justify-between
               transition-all duration-500 ease-in-out relative
-              ${isSidebarOpen ? 'w-64 p-6' : 'w-12 py-6 items-center'}
+              ${isSidebarOpen ? 'w-80 p-6' : 'w-12 py-6 items-center'}
             `}
           >
             {/* Toggle Button */}
