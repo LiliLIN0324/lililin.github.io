@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { AVAILABLE_KS } from './src/demos/3d-cluster-visualizer-main/constants';
-import { fetchLocalClusterData } from './src/demos/3d-cluster-visualizer-main/utils/dataLoader';
-import { parseCSVFiles } from './src/demos/3d-cluster-visualizer-main/utils/csvHelper';
-import ClusterVisualizer from './src/demos/3d-cluster-visualizer-main/components/ClusterVisualizer';
-import { Cluster } from './src/demos/3d-cluster-visualizer-main/types';
+import { AVAILABLE_KS } from './demos/3d-cluster-visualizer-main/constants';
+import { fetchLocalClusterData } from './demos/3d-cluster-visualizer-main/utils/dataLoader';
+import { parseCSVFiles } from './demos/3d-cluster-visualizer-main/utils/csvHelper';
+import ClusterVisualizer from './demos/3d-cluster-visualizer-main/components/ClusterVisualizer';
+import { Cluster } from './demos/3d-cluster-visualizer-main/types';
 import { Loader2, AlertCircle, Maximize2 } from 'lucide-react';
-import './src/index.css'
+import './index.css'
 
 export type AppProps = {
   initialK?: number;
