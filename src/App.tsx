@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AVAILABLE_KS } from './demos/3d-cluster-visualizer-main/constants';
 import { fetchLocalClusterData } from './demos/3d-cluster-visualizer-main/utils/dataLoader';
-import { parseCSVFiles } from './demos/3d-cluster-visualizer-main/utils/csvHelper';
 import ClusterVisualizer from './demos/3d-cluster-visualizer-main/components/ClusterVisualizer';
 import { Cluster } from './demos/3d-cluster-visualizer-main/types';
-import { Loader2, AlertCircle, Maximize2 } from 'lucide-react';
-import './index.css'
+import { Loader2, AlertCircle } from 'lucide-react';
+import './index.css';
 
 export type AppProps = {
   initialK?: number;
@@ -13,7 +12,7 @@ export type AppProps = {
   isEmbedded?: boolean;
 };
 
-const ClusterVisualizer3D : React.FC<AppProps> = ({ initialK = 5, providedClusters, isEmbedded = false }) => {
+const ClusterVisualizer3D: React.FC<AppProps> = ({ initialK = 5, providedClusters, isEmbedded = false }) => {
   const [k, setK] = useState<number>(initialK);
   const [isCustomData, setIsCustomData] = useState<boolean>(!!(providedClusters && providedClusters.length));
   const [loadedClusters, setLoadedClusters] = useState<Cluster[]>([]);
@@ -22,13 +21,12 @@ const ClusterVisualizer3D : React.FC<AppProps> = ({ initialK = 5, providedCluste
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [selectedClusterId, setSelectedClusterId] = useState<number | null>(null);
   const [selectedPointIndex, setSelectedPointIndex] = useState<number | null>(null);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showAllAttributes, setShowAllAttributes] = useState<boolean>(false);
 
   const activeClusters = isCustomData ? customClusters : loadedClusters;
 
+  // 加载本地聚类数据
   useEffect(() => {
-    // If user provided clusters (embedding), prefer them as custom data
     if (providedClusters && providedClusters.length) {
       setCustomClusters(providedClusters);
       setIsCustomData(true);
@@ -43,7 +41,7 @@ const ClusterVisualizer3D : React.FC<AppProps> = ({ initialK = 5, providedCluste
       setLoadedClusters([]);
       handleReset();
       try {
-        const data = await fetchLocalClusterData(k);
+        const data = await fetchLocalClusterData(k, showAllAttributes); // 根据 showAllAttributes 决定是否加载 extra keys
         if (data.length === 0) {
           setErrorMsg(`No data found for K=${k}.`);
         } else {
@@ -58,16 +56,14 @@ const ClusterVisualizer3D : React.FC<AppProps> = ({ initialK = 5, providedCluste
     };
 
     loadData();
-  }, [k, isCustomData, providedClusters]);
+  }, [k, isCustomData, providedClusters, showAllAttributes]);
 
-  // Keep providedClusters in sync if they change
+  // 保持 providedClusters 同步
   useEffect(() => {
     if (providedClusters && providedClusters.length) {
       setCustomClusters(providedClusters);
       setIsCustomData(true);
     } else {
-      // Only clear custom data if providedClusters becomes empty/null
-      // (do not force reload local data here, user can toggle)
       setCustomClusters([]);
       setIsCustomData(false);
     }
@@ -92,10 +88,9 @@ const ClusterVisualizer3D : React.FC<AppProps> = ({ initialK = 5, providedCluste
     <div className="absolute inset-0 bg-black">
       {/* Top Control Bar */}
       {!isEmbedded && (
-        <div className="absolute top-8 left-8 z-30 flex items-center gap-8 bg-gray-1000 text-white px-4 py-2 rounded-lg border border-gray-700 shadow-lg">
+        <div className="absolute top-8 left-8 z-30 flex items-center gap-8 bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 shadow-lg">
           <div className="flex items-center gap-2">
             <span className="text-sm font-bold">Select K:</span>
-            
             {AVAILABLE_KS.map((val) => (
               <button
                 key={val}
@@ -103,15 +98,13 @@ const ClusterVisualizer3D : React.FC<AppProps> = ({ initialK = 5, providedCluste
                 className={`px-3 py-1 rounded font-medium transition-colors ${
                   !isCustomData && k === val
                     ? 'bg-white text-black shadow'
-                    : 'bg-gray-1000 text-white hover:bg-gray-500'
+                    : 'bg-gray-800 text-white hover:bg-gray-600'
                 }`}
               >
                 {val}
               </button>
             ))}
-
           </div>
-
         </div>
       )}
 
@@ -123,7 +116,7 @@ const ClusterVisualizer3D : React.FC<AppProps> = ({ initialK = 5, providedCluste
       )}
       {errorMsg && !isLoading && (
         <div className="absolute top-20 left-10 z-50 bg-red-50 text-red-700 px-4 py-3 rounded-md border border-red-200 shadow-sm flex items-center gap-2">
-          <AlertCircle size={2} />
+          <AlertCircle size={20} />
           <p className="text-sm">{errorMsg}</p>
         </div>
       )}
@@ -132,14 +125,25 @@ const ClusterVisualizer3D : React.FC<AppProps> = ({ initialK = 5, providedCluste
       <div className="absolute inset-0">
         <ClusterVisualizer
           clusters={activeClusters}
+          showAllAttributes={showAllAttributes}
           selectedClusterId={selectedClusterId}
           selectedPointIndex={selectedPointIndex}
           onClusterSelect={handleClusterSelect}
           onReset={handleReset}
         />
       </div>
+
+      {/* 左下角按钮 */}
+      <div className="absolute bottom-8 right-8 z-30">
+        <button
+          onClick={() => setShowAllAttributes(prev => !prev)}
+          className="px-4 py-2 bg-white text-black rounded-lg shadow hover:bg-gray-300 transition-colors"
+        >
+          {showAllAttributes ? "Show Mean Attributes" : "Show All Attributes"}
+        </button>
+      </div>
     </div>
   );
 };
 
-export default ClusterVisualizer3D ;
+export default ClusterVisualizer3D;

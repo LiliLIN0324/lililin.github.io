@@ -6,7 +6,8 @@ import { parseCSVContent } from './csvHelper';
  * Fetches CSV files from the /public/data/K_{k}/ directory.
  * Expects file naming convention: K_{k}_Cluster{i}_3D_Data.csv
  */
-export const fetchLocalClusterData = async (k: number): Promise<Cluster[]> => {
+export const fetchLocalClusterData = async (k: number, includeExtra = false): 
+  Promise<Cluster[]> => {
   const clusters: Cluster[] = [];
   const promises: Promise<void>[] = [];
 
@@ -29,7 +30,7 @@ export const fetchLocalClusterData = async (k: number): Promise<Cluster[]> => {
       .then(text => {
         if (!text) return;
         
-        const data = parseCSVContent(text);
+        const data = parseCSVContent(text, includeExtra);
         if (data.length > 0) {
           clusters.push({
             id: i,
