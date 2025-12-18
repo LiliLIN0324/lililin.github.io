@@ -37,34 +37,6 @@ const extractClusterNumber = (filename: string): number => {
   return match ? parseInt(match[1], 10) : 999;
 };
 
-// export const parseCSVContent = (content: string): DataPoint[] => {
-//   const lines = content.split('\n');
-//   const data: DataPoint[] = [];
-
-//   // Skip header if it exists (check if first char is number)
-//   // If line starts with a letter, assume header
-//   const startIndex = /^[a-zA-Z]/.test(lines[0]) ? 1 : 0;
-
-//   for (let i = startIndex; i < lines.length; i++) {
-//     const line = lines[i].trim();
-//     if (!line) continue;
-
-//     const parts = line.split(',');
-//     // CSV Format: Date, Mean_Day, Mean_Night
-//     // Ensure we have at least 3 columns
-//     if (parts.length >= 3) {
-//       const date = parseFloat(parts[0]);
-//       const meanDay = parseFloat(parts[1]);
-//       const meanNight = parseFloat(parts[2]);
-
-//       if (!isNaN(date) && !isNaN(meanDay) && !isNaN(meanNight)) {
-//         data.push({ date, meanDay, meanNight });
-//       }
-//     }
-//   }
-//   return data;
-// };
-
 export const parseCSVContent = (content: string): DataPoint[] => {
   const lines = content.trim().split("\n");
   const header = lines[0].split(",");
