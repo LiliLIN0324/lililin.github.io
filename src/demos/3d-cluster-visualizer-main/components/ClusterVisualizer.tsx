@@ -20,13 +20,12 @@ const ClusterVisualizer: React.FC<ClusterVisualizerProps> = ({
   onReset,
   showAllAttributes, // 新增
 }) => {
-  // --- 新增：旋转状态 ---
   // --- 修改：状态管理 ---
   const [rotationAngle, setRotationAngle] = useState(0);
   const [isAutoRotating, setIsAutoRotating] = useState(true); // 新增：控制是否自动旋转
   // 1. 新增：用 Ref 记录最后的相机位置，防止点击重置
   const lastCameraRef = useRef<{ x: number; y: number; z: number }>({
-    x: 1.5, y: 1.5, z: 1.5
+    x: 2.12, y: 2.12, z: 1.5
   });
   const requestRef = useRef<number>();
 
@@ -211,7 +210,8 @@ clusters.forEach((cluster) => {
             y: 2.12 * Math.sin(rotationAngle), 
             z: 1.5 
           } 
-        : lastCameraRef.current,
+        : {x: lastCameraRef.current.x, y: lastCameraRef.current.y, z: lastCameraRef.current.z},
+
       projection: { type: 'perspective' as const }
       },
     }), [isAutoRotating, rotationAngle]);
@@ -222,7 +222,14 @@ clusters.forEach((cluster) => {
     showlegend: true,
     paper_bgcolor: '#000000',   // ← 整个画布
     plot_bgcolor: '#000000',    // ← 绘图区
-
+    // --- 关键修改：清空留白 ---
+      margin: {
+        l: 0,
+        r: 0,
+        b: 0,
+        t: 0,
+        pad: 0
+      },
     legend: {
       x: 1.05,
       y: 0.9,            // 放在靠近顶部的地方（比如 90% 高度处）

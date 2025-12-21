@@ -85,7 +85,7 @@ const ClusterVisualizer3D: React.FC<AppProps> = ({ initialK = 5, providedCluster
   };
 
   return (
-    <div className="absolute inset-0 bg-black">
+    <div className="absolute inset-0 bg-black overflow-hidden ">
       {/* Top Control Bar */}
       {!isEmbedded && (
         <div className="absolute top-8 left-8 z-30 flex items-center gap-8 bg-gray-1000 text-white px-4 py-2 rounded-lg border border-gray-700 shadow-lg">
@@ -121,8 +121,17 @@ const ClusterVisualizer3D: React.FC<AppProps> = ({ initialK = 5, providedCluster
         </div>
       )}
 
+      {/* 左下角按钮 */}
+      <div className="absolute bottom-8 right-8 z-30">
+        <button
+          onClick={() => setShowAllAttributes(prev => !prev)}
+          className="px-4 py-2 bg-white text-black rounded-lg shadow hover:bg-gray-300 transition-colors"
+        >
+          {showAllAttributes ? "Show Mean Attributes" : "Show All Attributes"}
+        </button>
+      </div>
       {/* Main Visualization */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 bg-red-500">
         <ClusterVisualizer
           clusters={activeClusters}
           showAllAttributes={showAllAttributes}
@@ -133,15 +142,6 @@ const ClusterVisualizer3D: React.FC<AppProps> = ({ initialK = 5, providedCluster
         />
       </div>
 
-      {/* 左下角按钮 */}
-      <div className="absolute bottom-8 right-8 z-30">
-        <button
-          onClick={() => setShowAllAttributes(prev => !prev)}
-          className="px-4 py-2 bg-white text-black rounded-lg shadow hover:bg-gray-300 transition-colors"
-        >
-          {showAllAttributes ? "Show Mean Attributes" : "Show All Attributes"}
-        </button>
-      </div>
     </div>
   );
 };
