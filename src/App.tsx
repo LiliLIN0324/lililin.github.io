@@ -3,7 +3,7 @@ import { AVAILABLE_KS } from './demos/3d-cluster-visualizer-main/constants';
 import { fetchLocalClusterData } from './demos/3d-cluster-visualizer-main/utils/dataLoader';
 import ClusterVisualizer from './demos/3d-cluster-visualizer-main/components/ClusterVisualizer';
 import { Cluster } from './demos/3d-cluster-visualizer-main/types';
-import { Loader2, AlertCircle } from 'lucide-react';
+import { Loader2, AlertCircle, Layers } from 'lucide-react';
 import './index.css';
 
 export type AppProps = {
@@ -125,9 +125,9 @@ const ClusterVisualizer3D: React.FC<AppProps> = ({ initialK = 5, providedCluster
       <div className="absolute bottom-8 right-8 z-30">
         <button
           onClick={() => setShowAllAttributes(prev => !prev)}
-          className="px-4 py-2 bg-white text-black rounded-lg shadow hover:bg-gray-300 transition-colors"
+          className="px-4 py-2 bg-white text-black rounded-lg shadow hover:bg-gray-300 transition-colors text-sm flex items-center gap-2"
         >
-          {showAllAttributes ? "Show Mean Attributes" : "Show All Attributes"}
+          {showAllAttributes ? <> Show Mean Attributes</> : <> Show All Attributes</>}
         </button>
       </div>
       {/* Main Visualization */}
