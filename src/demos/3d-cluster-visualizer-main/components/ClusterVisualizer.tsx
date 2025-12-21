@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import Plot from 'react-plotly.js';
 import { Cluster } from '../types';
-import { Maximize2 } from 'lucide-react';
+import { Maximize2, Pause, Play } from 'lucide-react';
 
 interface ClusterVisualizerProps {
   clusters: Cluster[];
@@ -295,9 +295,9 @@ return (
         className="flex items-center justify-center gap-2 bg-white text-black px-4 py-2 rounded-lg shadow-md hover:bg-gray-300 text-sm font-medium transition-all backdrop-blur-sm border border-white/10"
       >
         {isAutoRotating ? (
-          <>Stop ⏸ </> // 或者使用图标 <Pause size={16} />
+          <>Stop <Pause size={16} /> </> // 或者使用图标 <Pause size={16} />
         ) : (
-          <>Play ▶ </> // 或者使用图标 <Play size={16} />
+          <>Play <Play size={16} /> </> // 或者使用图标 <Play size={16} />
         )}
       </button>
 
