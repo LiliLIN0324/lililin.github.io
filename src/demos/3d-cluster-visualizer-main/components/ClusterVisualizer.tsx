@@ -236,7 +236,7 @@ clusters.forEach((cluster) => {
       traceorder: 'normal',
       tracegroupgap: 0
     },
-    uirevision: 'constant-revision',
+    uirevision: 'true',
     scene: sceneLayout
   }), [sceneLayout]);
 
@@ -307,7 +307,7 @@ return (
       // --- 关键部分 ---
       data={traces}
       layout={layout}
-      uirevision={true}
+      // uirevision={true}
       useResizeHandler={true}
       style={{ width: '100%', height: '100%' }}
       onClick={handlePlotClick}
