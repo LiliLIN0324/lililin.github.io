@@ -88,7 +88,7 @@ const ClusterVisualizer3D: React.FC<AppProps> = ({ initialK = 5, providedCluster
     <div className="absolute inset-0 bg-black">
       {/* Top Control Bar */}
       {!isEmbedded && (
-        <div className="absolute top-8 left-8 z-30 flex items-center gap-8 bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 shadow-lg">
+        <div className="absolute top-8 left-8 z-30 flex items-center gap-8 bg-gray-1000 text-white px-4 py-2 rounded-lg border border-gray-700 shadow-lg">
           <div className="flex items-center gap-2">
             <span className="text-sm font-bold">Select K:</span>
             {AVAILABLE_KS.map((val) => (
@@ -98,7 +98,7 @@ const ClusterVisualizer3D: React.FC<AppProps> = ({ initialK = 5, providedCluster
                 className={`px-3 py-1 rounded font-medium transition-colors ${
                   !isCustomData && k === val
                     ? 'bg-white text-black shadow'
-                    : 'bg-gray-800 text-white hover:bg-gray-600'
+                    : 'bg-gray-1000 text-white hover:bg-gray-800'
                 }`}
               >
                 {val}
@@ -111,7 +111,7 @@ const ClusterVisualizer3D: React.FC<AppProps> = ({ initialK = 5, providedCluster
       {/* Loading & Error */}
       {isLoading && (
         <div className="absolute inset-0 z-40 flex items-center justify-center bg-white backdrop-blur-sm">
-          <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+          <Loader2 className="w-8 h-8 text-gray-600 animate-spin" />
         </div>
       )}
       {errorMsg && !isLoading && (

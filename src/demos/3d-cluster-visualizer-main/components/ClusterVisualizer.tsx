@@ -1,4 +1,4 @@
-import React, { useMemo,useState, useEffect, useRef  } from 'react';
+import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import Plot from 'react-plotly.js';
 import { Cluster } from '../types';
 import { Maximize2 } from 'lucide-react';
@@ -24,17 +24,31 @@ const ClusterVisualizer: React.FC<ClusterVisualizerProps> = ({
   // --- 修改：状态管理 ---
   const [rotationAngle, setRotationAngle] = useState(0);
   const [isAutoRotating, setIsAutoRotating] = useState(true); // 新增：控制是否自动旋转
+  // 1. 新增：用 Ref 记录最后的相机位置，防止点击重置
+  const lastCameraRef = useRef<{ x: number; y: number; z: number }>({
+    x: 1.5, y: 1.5, z: 1.5
+  });
   const requestRef = useRef<number>();
 
+  // 2. 自动旋转逻辑：同步更新 Ref
   useEffect(() => {
-    // 关键：如果不允许旋转，直接清除动画并返回
     if (!isAutoRotating) {
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
       return;
     }
 
+    const radius = 2.12;
     const animate = () => {
-      setRotationAngle((prev) => prev + 0.005);
+      setRotationAngle((prev) => {
+        const next = prev + 0.005;
+        // 实时更新 Ref，这样点击暂停瞬间，Ref 停在当前位置
+        lastCameraRef.current = {
+          x: radius * Math.cos(next),
+          y: radius * Math.sin(next),
+          z: 1.5
+        };
+        return next;
+      });
       requestRef.current = requestAnimationFrame(animate);
     };
 
@@ -42,37 +56,10 @@ const ClusterVisualizer: React.FC<ClusterVisualizerProps> = ({
     return () => {
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
     };
-  }, [isAutoRotating, selectedClusterId]); // 监听旋转开关
-
-    // // --- 新增：动画循环 ---
-    // useEffect(() => {
-    //   // 只有在没有选中特定簇时才旋转，或者根据需求一直旋转
-    //   // 如果你想在选中后停止旋转，可以加上：if (selectedClusterId !== null) return;
-      
-    //   const animate = () => {
-    //     setRotationAngle((prev) => (prev + 0.005)); // 调整这个数值改变旋转速度
-    //     requestRef.current = requestAnimationFrame(animate);
-    //   };
-
-    //   requestRef.current = requestAnimationFrame(animate);
-    //   return () => {
-    //     if (requestRef.current) cancelAnimationFrame(requestRef.current);
-    //   };
-    // }, [selectedClusterId]);
-
-    // --- 计算相机位置 ---
-    // 使用极坐标转换：x = r * cos(θ), y = r * sin(θ)
-    // 计算相机位置
-    const radius = 2.12;
-    const cameraEye = isAutoRotating 
-    ? {
-        x: radius * Math.cos(rotationAngle),
-        y: radius * Math.sin(rotationAngle),
-        z: 1.5
-      }
-    : undefined; // 停止旋转时传 undefined，配合 uirevision 使用户可以自由缩放旋转
-  const traces = useMemo(() => {
-    const plotTraces: any[] = [];
+  }, [isAutoRotating]);
+// 3. 计算相机位置时，优先使用 Ref 的值
+const traces = useMemo(() => {
+  const plotTraces: any[] = [];
 
 clusters.forEach((cluster) => {
   const isSelected = selectedClusterId === cluster.id;
@@ -89,15 +76,18 @@ clusters.forEach((cluster) => {
     name: cluster.name, // legend 只出现一次
     // 关键：给整个 trace 增加一个标识，方便 legendClick 获取
     meta: { clusterId: cluster.id },
-    // visible: isVisible ? true : 'legendonly',
-    // visible: Visible,
-    opacity: isSelected ? 1 : (selectedClusterId === null ? 0.6 : 0.05), // 用极低透明度代替隐藏
+    // 只有在 active 时才真正显示在画布上
+    opacity: isSelected ? 1 : (selectedClusterId === null ? 0.6 : 0.1), // 用极低透明度代替隐藏
     x: xValues,
     y: yValues,
     z: zValues,
     line: { color: cluster.color, width: isSelected ? 6 : 3 },
     customdata: cluster.data.map((_, idx) => ({ clusterId: cluster.id, pointIndex: idx })),
     hovertemplate: `<b>${cluster.name}</b><br>Mean_Day: %{y:.2f}<br>Mean_Night: %{z:.2f}<br>Date: %{x}<extra></extra>`,
+    hoverinfo: (selectedClusterId === null || isSelected) ? 'all' : 'skip',
+    showlegend: true,
+    
+    clickinfo: 'skip' // 虚线不触发点击
   });
 
   // 如果 showAllAttributes = true，再画其他指标，但 legend 可以隐藏
@@ -124,16 +114,20 @@ clusters.forEach((cluster) => {
           meta: { clusterId: cluster.id }, // 同样带上所属的 clusterId
           // 只有在 active 时才真正显示在画布上
           visible: shouldShowExtra ? true : false, 
+          hoverinfo: isSelected ? 'all' : 'skip',
+          customdata: cluster.data.map((_, idx) => ({ clusterId: cluster.id, pointIndex: idx })),
           x: xValues,
           y: yExtra,
           z: zExtra,
           line: { 
             color: cluster.color, 
-            width: 2, 
+            width: 1.5, 
           },
-          opacity: isSelected ? 0.8 : 0.3, // 选中时虚线亮一点
+          hovertemplate: `<b>${cluster.name} - ${config.name}</b><br>${config.name}_Day: %{y:.2f}<br>${config.name}_Night: %{z:.2f}<br>Date: %{x}<extra></extra>`,
+          opacity: isSelected ? 0.8 : 0.2, // 选中时虚线亮一点
           showlegend: true, 
-          // hoverinfo: 'skip' // 虚线不触发 hover，避免干扰主线
+
+          clickinfo: 'skip' // 虚线不触发点击
         });
       }
     });
@@ -171,25 +165,7 @@ clusters.forEach((cluster) => {
 
     return plotTraces;
   }, [clusters, selectedClusterId, selectedPointIndex, showAllAttributes]);
-
-  const layout: any = {
-    autosize: true,
-    showlegend: true,
-    legend: {
-      x: 1.05,
-      y: 0.9,            // 放在靠近顶部的地方（比如 90% 高度处）
-      xanchor: 'right',
-      yanchor: 'top',    // 关键：改为顶部锚点，图例多时会向下延伸
-
-      bgcolor: '#00000000',
-      bordercolor: '#000000ff',
-      font: { size: 14, color: '#ffffff' },  // 文本颜色改成白色
-      orientation: 'v',  // 垂直排列
-      traceorder: 'normal',
-      tracegroupgap: 0
-    },
-    uirevision: 'true', // 极其重要：防止 React 刷新导致用户视角被强行重置
-    scene: {
+  const sceneLayout = useMemo(() => ({
         xaxis: { 
             title: { text: 'Date', font: { color: '#ffffff', size: 16 } },
             backgroundcolor: '#000000', 
@@ -227,29 +203,59 @@ clusters.forEach((cluster) => {
         },
         dragmode: 'turntable',
         aspectmode: 'cube',
-        // camera: { eye: { x: 1.5, y: -1.5, z: 1.5 } }, // 固定视角
+        // 动态相机位置
         camera: { 
-        eye: cameraEye, // 使用动态计算的相机位置
-        projection: { type: 'perspective' }
+        eye: isAutoRotating 
+        ? { 
+            x: 2.12 * Math.cos(rotationAngle), 
+            y: 2.12 * Math.sin(rotationAngle), 
+            z: 1.5 
+          } 
+        : lastCameraRef.current,
+      projection: { type: 'perspective' as const }
       },
-    },
-    margin: { l: 20, r: 20, b: 20, t: 20 },
-    paper_bgcolor: '#222121ff',
-    plot_bgcolor: '#000000',
-  };
+    }), [isAutoRotating, rotationAngle]);
 
-  const handlePlotClick = (event: any) => {
+    // 修改 layout，调整 legend 位置和样式
+  const layout: any = useMemo(() => ({
+    autosize: true,
+    showlegend: true,
+    paper_bgcolor: '#000000',   // ← 整个画布
+    plot_bgcolor: '#000000',    // ← 绘图区
+
+    legend: {
+      x: 1.05,
+      y: 0.9,            // 放在靠近顶部的地方（比如 90% 高度处）
+      xanchor: 'right',
+      yanchor: 'top',    // 关键：改为顶部锚点，图例多时会向下延伸
+
+      bgcolor: 'rgba(15, 15, 15, 0)',
+      bordercolor: '#000000ff',
+      font: { size: 14, color: '#ffffff' },  // 文本颜色改成白色
+      orientation: 'v',  // 垂直排列
+      traceorder: 'normal',
+      tracegroupgap: 0
+    },
+    uirevision: 'constant-revision',
+    scene: sceneLayout
+  }), [sceneLayout]);
+
+  // 修改 handlePlotClick
+  const handlePlotClick = useCallback((event: any) => {
     if (!event.points || event.points.length === 0) return;
 
+    // 点击时停止自动旋转，防止相机位置冲突
+    setIsAutoRotating(false); 
+
     const point = event.points[0];
-    // @ts-ignore
     const meta = point.customdata;
     
     if (meta) {
       onClusterSelect(meta.clusterId, meta.pointIndex);
     }
-  };
-    const handleLegendClick = (event: any) => {
+  }, [onClusterSelect]); // 只有当回调改变时才更新
+
+  const handleLegendClick = (event: any) => {
     // 1. 获取当前点击的轨迹对象
     // 注意：这里的 traces 是来自你 useMemo 定义的那个数组
     const clickedTrace = traces[event.curveNumber];
@@ -266,9 +272,6 @@ clusters.forEach((cluster) => {
     // 返回 false 告诉 Plotly 不要切换显示/隐藏状态
     return false;
   };
-  // return (
-
-  //   <div className="absolute inset-0">
 
 return (
   <div className="absolute inset-0">
@@ -301,10 +304,10 @@ return (
     </div>
 
     <Plot
+      // --- 关键部分 ---
       data={traces}
       layout={layout}
-      // 注意：这里删掉了之前的 setIsAutoRotating(false)，
-      // 这样用户在拖拽时，图表不会自动强行关掉旋转开关。
+      uirevision={true}
       useResizeHandler={true}
       style={{ width: '100%', height: '100%' }}
       onClick={handlePlotClick}
