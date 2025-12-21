@@ -131,7 +131,7 @@ const ClusterVisualizer3D: React.FC<AppProps> = ({ initialK = 5, providedCluster
         </button>
       </div>
       {/* Main Visualization */}
-      <div className="absolute inset-0 bg-red-500">
+      <div className="absolute inset-0 ">
         <ClusterVisualizer
           clusters={activeClusters}
           showAllAttributes={showAllAttributes}
