@@ -5,6 +5,7 @@ import path from 'path'
 
 export default defineConfig({
   base: '/',
+  
   plugins: [react()],
   resolve: {
     alias: {
@@ -12,6 +13,7 @@ export default defineConfig({
     },
   },
   build: {
+    outDir: 'docs',
     rollupOptions: {
       output: {
         manualChunks(id) {
