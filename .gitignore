@@ -22,4 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-# *.tsx
+*.tsx
+1.py
+2.py

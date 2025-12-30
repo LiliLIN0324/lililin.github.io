@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
+
 export default defineConfig({
   base: '/',
   plugins: [react()],
@@ -11,7 +12,13 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: 'docs',
-    emptyOutDir: true,
-  },
-})
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'maplibre': ['maplibre-gl'],
+          'lucide-icons': ['lucide-react']
+        }
+      }
+    }
+  }
+});

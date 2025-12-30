@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { HashRouter as Router, Routes, Route, Link, Outlet, useParams, useLocation, Navigate } from 'react-router-dom';
 import ClusterVisualizer3D from "./src/App.tsx";
+import URplatform from "./src/UR-platform.tsx";
 import './src/index.css';
+
 
 // 数据部分保持不变
 const projects = [
@@ -33,8 +35,8 @@ const projects = [
       description: "A Comparative Analysis for Climate Change Adaptation in New York and Shanghai Master Plans",
       tech: ["Knowledge Graph", "NLP"],
       details: {
-        abstract: "This study extracts and compares urban planning knowledge from New York City and Shanghai master plans—created in different linguistic and cultural contexts—by representing them as knowledge graphs (KGs).",
-        solution: "Traditional natural language processing (NLP) techniques and generative large language models (LLMs) such as ChatGPT are then applied to generate and compare the edges connecting these nodes.",
+        abstract: "Urban planners often struggle to learn from other cities’ master plans, especially when these documents are lengthy, context-specific, and written in different languages. These challenges are further compounded by diverse social, economic, and cultural contexts. This study addresses these issues by creating expertise-informed knowledge graphs (KGs) from the master plans of New York City and Shanghai—two cities with distinct linguistic, cultural, and governance contexts. We define ten core concepts—five related to climate change adaptation and five to urban planning—based on expert knowledge, and apply both traditional natural language processing (NLP) methods and emerging large language models (LLMs) to estimate node weights and relational edges. The traditional methods include simple word frequency, TF-IDF, and conventional topic modeling, while the LLM-based method leverages the power of generative LLMs such as ChatGPT for semantic relationship extraction. Expert validation shows that while LLM-based methods capture nuanced relationships more effectively, their 【black box】 nature limits interpretability. To address this, we propose a hybrid LLM approach that integrates explainable NLP techniques (such as coexistence frequency and semantic similarity) and LLM-based topic modeling. The resulting KGs reveal the difference between the two master plans: New York prioritizes resilience and equity, while Shanghai emphasizes sustainable development and balanced urbanization. By comparing these KGs, we demonstrate the potential of the hybrid approach in facilitating knowledge sharing and policy adaptation across diverse urban contexts. This scalable framework can be applied globally to analyze urban planning documents, providing more context-sensitive adaptation strategies. Furthermore, it offers a foundation for future research to extend this methodology to additional cities or incorporate temporal changes, deepening insights into urban adaptation planning and improving climate change strategies.",
+        solution: "Traditional natural language processing (NLP) techniques and generative large language models (LLMs) are then applied to generate and compare the edges connecting these nodes.",
         challenge: "Expert validation reveals that while LLM-based methods capture semantic nuances more effectively, they often lack the interpretability crucial for practical implementation.",
         logo: "./data/fig/kg_logo.jpg",
         image: ["./data/fig/kg_figure.jpg"],
@@ -49,7 +51,7 @@ const projects = [
       description: "An empirical study in different climate zones in the United States",
       tech: ["GIS", "Spatial Analysis"],
       details: {
-        abstract: "As climate change intensifies, understanding heat resilience (HR) in urban environments is crucial for developing climate-resilient cities.",
+        abstract: "As climate change intensifies, understanding heat resilience (HR) in urban environments is crucial for developing climate-resilient cities. While numerous studies have examined the relationship between urban form and urban heat islands (UHI), few have focused on HR, often limiting their analysis to single extreme heat events. Additionally, translating complex urban form findings into practical urban planning policies remains challenging. The concept of local climate zones (LCZ) offers a thermally-based classification of urban forms, which is more accessible for policymakers. However, most LCZ studies focus on UHI, with little attention to HR. This study addresses this gap by analyzing the relationship between LCZs and HR in New York City. HR is defined as the difference in land surface temperature (LST) between extreme heat and normal heat days. Using Landsat 8 imagery from 2010 to 2019 and selecting days with minimal cloud cover, the study identifies three pairs of heat events based on air temperature percentiles. LCZ map and GIS data, combined with census tract information, are analyzed using a spatial panel model to assess the influence of different LCZs and large-scale landscapes on HR. The results reveal that LCZ 1 (Compact high-rise) and LCZ 4 (Open high-rise) significantly increase HR compared to LCZ 2 (Compact mid-rise), while LCZ 3 (Compact low-rise) reduces HR. Additionally, HR is significantly elevated during extreme events with higher temperatures in normal heat days and greater temperature increases between normal and extreme heat days. These insights offer valuable guidance for urban planners and policymakers in designing heat-resilient cities by incorporating the LCZ framework into climate adaptation strategies and urban governance.",
         solution: "Using Landsat 8 imagery from 2010 to 2019 and selecting days with minimal cloud cover, the study identifies two pairs of heat events based on air temperature percentiles.",
         challenge: "Translating complex urban form findings into practical urban planning policies remains challenging.",
         logo: "./data/fig/lcz_logo.jpg",
@@ -65,7 +67,8 @@ const projects = [
       description: "Revealing nonlinear relationships between urban form factors and extreme heat with an explainable machine learning approach",
       tech: ["GIS", "Machine Learning"],
       details: {
-        abstract: "Climate change has been a pressing global issue in the recent decades as it increasingly influences human life through extreme weather, ecosystem collapse, and food crises.",
+        abstract: "Climate change has been a pressing global issue in the recent decades as it increasingly influences human life through extreme weather,ecosystem collapse, and food crises. Extreme heat is particularly exacerbated by the urban heat island (UHI) effect in cities. Numerous studies have empirically investigated the link between urban form factors and surface Urban Heat Islands (UHI), but few have studied how UHI changes in response to an extreme heat event, conceptualized as heat resilience in recent studies. Additionally, the majority of existing studies have relied on traditional regression models that assume linear relationships. To address this gap, this study aims to identify nonlinear relationships between urban form factors and land surface temperature (LST) and heat resilience, using machine learning methods. The GBDT models demonstrated superior predictive accuracy, as evidenced by the lowest mean squared error (MSE).  In addition, the results indicate that the urban form factors have nonlinearity relationships with urban land surface extreme heat and the associated heat resilience. These findings have valuable implications for urban planning practice aimed at developing heat-resilient cities. ",
+
         solution: "To address this gap, this study aims to identify nonlinear relationships between urban form factors and land surface temperature (LST) and heat resilience, using machine learning methods.",
         challenge: "Majority of existing studies have relied on traditional regression models that assume linear relationships.",
         logo: "./data/fig/ml_logo.jpg",
@@ -74,12 +77,14 @@ const projects = [
     },
     {
       id: "05",
-      slug: "",
+      slug: "participatory-urban-regeneration-empowered-by-artificial-intelligence",
       title: "Participatory Urban Regeneration Empowered by Artificial Intelligence",
-      category: "",
+      category: "Urban regeneration, participatory urban planning",
       year: "2025-present",
-      description: "",
-      tech: [""],
+      description: "Using AI techniques to buold a platform to encourage stakeholders joining in the urban regeneration",
+      tech: ["diffusion models"],
+      hasDemo: true,
+      component: <URplatform />,
       details: {
         abstract: "This project integrates generative artificial intelligence techniques, including diffusion models, with large language model-based multi-agent mechanisms to develop a participatory urban regeneration framework that facilitates public interaction and multi-stakeholder engagement. Taking the area surrounding the initial development zone of Shanghai Wusong Innovation City as a case study, the framework incorporates urban spatial morphology, behavioral activity patterns, and urban heat island indicators into the early formulation of urban design guidelines, with the aim of achieving a participatory, efficient, and responsive pathway to urban regeneration.",
         solution: "https://upd-caup.tongji.edu.cn/6e/91/c36467a355985/page.htm",
@@ -174,10 +179,23 @@ const designProjects = [
         image: ["./data/fig/Genshot.jpg"],
         logo: "./data/fig/Genshot_logo.jpg",
       }
+    },
+    {
+      id: "07",
+      slug:"",
+      title: "Riffle - AI game Generation Tool",
+      category: "UI&UX Design",
+      year: "2026 - ongoing",
+      description: "An AI-powered game generation tool",
+      tech: ["Figma", "React", "TypeScript"],
+      hasDemo: true,
+      details: {
+        image: ["./data/fig/Riffle.jpg"],
+        logo: "./data/fig/Riffle_logo.jpg",
+      }
     }
 ];
 
-// --- 抽离的子组件 ---
 
 const ProjectListView = ({ data, type }: { data: any[], type: string }) => (
   <div className="p-6 md:p-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -269,9 +287,9 @@ const ProjectDetailView = ({ data, type }: { data: any[], type: string }) => {
              </div>
           </div>
         ) : (
-          // 修改后的代码：
-      <div className="w-full h-full min-h-[calc(100vh-64px)] bg-neutral-100 relative">
-        {project.component || <div className="flex items-center justify-center h-full text-neutral-400 font-mono">NO_SIGNAL</div>}
+          // 修改后的代码：高度
+      <div className="w-full h-full bg-neutral-100 relative">
+        {project.component ||<div className="flex items-center justify-center h-full text-neutral-400 font-mono">NO_SIGNAL</div>}
       </div>
         )}
       </div>
