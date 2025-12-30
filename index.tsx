@@ -1,10 +1,12 @@
-import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { HashRouter as Router, Routes, Route, Link, Outlet, useParams, useLocation, Navigate } from 'react-router-dom';
-import ClusterVisualizer3D from "./src/App.tsx";
-import URplatform from "./src/UR-platform.tsx";
 import './src/index.css';
+// 1. 修改 import 方式
+import React, { useState, Suspense, lazy } from "react"; // 增加 Suspense 和 lazy
 
+// 使用 lazy 动态导入
+const ClusterVisualizer3D = lazy(() => import("./src/App.tsx"));
+const URplatform = lazy(() => import("./src/UR-platform.tsx"));
 
 // 数据部分保持不变
 const projects = [
@@ -287,11 +289,13 @@ const ProjectDetailView = ({ data, type }: { data: any[], type: string }) => {
              </div>
           </div>
         ) : (
-          // 修改后的代码：高度
       <div className="w-full h-full bg-neutral-100 relative">
-        {project.component ||<div className="flex items-center justify-center h-full text-neutral-400 font-mono">NO_SIGNAL</div>}
+        {/* 使用 Suspense 包裹异步组件 */}
+        <Suspense fallback={<div className="flex items-center justify-center h-full font-mono">LOADING_MODULE...</div>}>
+          {project.component || <div className="flex items-center justify-center h-full text-neutral-400 font-mono">NO_SIGNAL</div>}
+        </Suspense>
       </div>
-        )}
+      )}
       </div>
     </div>
   );

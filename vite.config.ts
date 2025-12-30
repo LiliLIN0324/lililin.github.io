@@ -14,10 +14,14 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          'maplibre': ['maplibre-gl'],
-          'lucide-icons': ['lucide-react']
+        manualChunks(id) {
+          // 将 node_modules 中的库打包到独立的 vendor 文件中
+          if (id.includes('node_modules')) {
+            if (id.includes('three')) return 'threejs';
+            if (id.includes('maplibre')) return 'maplibre';
+            return 'vendor';
         }
+       }
       }
     }
   }
